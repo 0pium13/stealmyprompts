@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum PromptStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  name      String?
+  username  String?  @unique
+  avatar    String?
+  bio       String?
+  role      UserRole @default(USER)
+  
+  // Social links
+  instagram String?
+  youtube   String?
+  twitter   String?
+  website   String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  prompts      Prompt[]
+  storyboards  Storyboard[]
+  likes        Like[]
+  submissions  Submission[]
+  generations  Generation[]
+
+  
+  @@index([username])
+}
+
+model Prompt {
+  id          String       @id @default(cuid())
+  title       String
+  promptText  String
+  negativePrompt String?
+  mediaUrl    String
+  style       String[]     // Cinematic, Portrait, etc.
+  cameraSettings Json?     // { lens, angle, movement }
+  creatorName String?      // For scraped content
+  creatorId   String?      // For user submitted content
+  tags        String[]
+  
+  // Moderation & Status
+  status      PromptStatus @default(PENDING)
+  
+  // Featured
+  featured      Boolean @default(false)
+  featuredOrder Int?
+
+  // Stats
+  views       Int @default(0)
+
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  creator      User?        @relation(fields: [creatorId], references: [id])
+  likes        Like[]
+
+
+  @@index([createdAt])
+  @@index([status])
+}
+
+model Storyboard {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  videoUrl    String?
+  pdfUrl      String?
+  script      String?  @db.Text
+  workflowNotes String? @db.Text
+  promptsUsed Json?    // Array of prompt objects or strings
+  creatorId   String
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  creator User @relation(fields: [creatorId], references: [id])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  promptId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  prompt Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, promptId])
+}
+
+
+
+model Submission {
+  id          String   @id @default(cuid())
+  type        String   // PROMPT or STORYBOARD
+  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  data        Json     // The submission data
+  submitterId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  submitter User @relation(fields: [submitterId], references: [id])
+}
+
+model Generation {
+  id             String   @id @default(cuid())
+  
+  // Prompts
+  originalPrompt String   // User input
+  enhancedPrompt String   // Gemini-enhanced
+  
+  // Image (Grid-Shot: 1 image with 3 panels)
+  gridImageUrl   String   // R2 URL to 3-panel image
+  
+  // Metadata
+  title          String
+  style          String?
+  isPublic       Boolean  @default(true)
+  
+  // Relations
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id])
+  
+  createdAt      DateTime @default(now())
+  
+  @@index([userId])
+  @@index([createdAt])
+}

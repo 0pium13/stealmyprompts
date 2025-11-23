@@ -1,0 +1,11 @@
+#!/usr/bin/expect
+
+set timeout -1
+set password "fh7A&2wKnjMW@+t91Yj+"
+
+spawn ssh root@88.222.215.156 "certbot --nginx -d stealmyprompts.ai -d www.stealmyprompts.ai --non-interactive --agree-tos -m admin@stealmyprompts.ai --redirect"
+
+expect {
+    "password:" { send "$password\r"; exp_continue }
+    eof
+}

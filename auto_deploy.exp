@@ -1,0 +1,25 @@
+#!/usr/bin/expect
+
+set timeout -1
+set password "fh7A&2wKnjMW@+t91Yj+"
+set ip "88.222.215.156"
+
+# 1. Run Deployment Script
+send_user "\n🚀 Starting Automated Deployment...\n"
+spawn ./deploy-hostinger.sh
+expect {
+    "password:" { send "$password\r"; exp_continue }
+    "Are you sure you want to continue connecting" { send "yes\r"; exp_continue }
+    eof
+}
+
+# 2. Run Env Upload Script
+send_user "\n🚀 Uploading Environment Variables...\n"
+spawn ./upload-env.sh
+expect {
+    "password:" { send "$password\r"; exp_continue }
+    "Are you sure you want to continue connecting" { send "yes\r"; exp_continue }
+    eof
+}
+
+send_user "\n✅ FULL DEPLOYMENT COMPLETE!\n"
