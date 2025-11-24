@@ -16,11 +16,14 @@ const R2 = new S3Client({
 
 export async function POST(request: Request) {
     console.log('[R2 Upload] === NEW UPLOAD REQUEST ===');
+    console.log('[R2 Upload] Clerk Publishable Key:', process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? 'Present' : 'Missing');
+    console.log('[R2 Upload] Clerk Secret Key:', process.env.CLERK_SECRET_KEY ? 'Present' : 'Missing');
 
     try {
         // Use auth() instead of requireAuth() for API routes
         const { userId } = await auth();
         console.log('[R2 Upload] User ID:', userId ? 'Present' : 'Missing');
+        console.log('[R2 Upload] User ID value:', userId);
 
         if (!userId) {
             console.log('[R2 Upload] Unauthorized - no userId');
