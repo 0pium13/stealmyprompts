@@ -1,0 +1,33 @@
+#!/usr/bin/expect
+
+set timeout -1
+set password "fh7A&2wKnjMW@+t91Yj+"
+
+puts "🚀 Uploading .next folder to server..."
+
+spawn rsync -avz --delete /Users/opium/vvvv/.next/ root@88.222.215.156:/var/www/stealmyprompts/.next/
+expect {
+    "password:" { send "$password\r"; exp_continue }
+    "Are you sure you want to continue connecting" { send "yes\r"; exp_continue }
+    eof
+}
+
+puts "🚀 Uploading public folder..."
+spawn rsync -avz /Users/opium/vvvv/public/ root@88.222.215.156:/var/www/stealmyprompts/public/
+
+expect {
+    "password:" { send "$password\r"; exp_continue }
+    "Are you sure you want to continue connecting" { send "yes\r"; exp_continue }
+    eof
+}
+
+puts "🔄 Restarting PM2..."
+
+spawn ssh root@88.222.215.156 "cd /var/www/stealmyprompts && pm2 restart stealmyprompts"
+
+expect {
+    "password:" { send "$password\r"; exp_continue }
+    eof
+}
+
+puts "✅ Deployment complete!"

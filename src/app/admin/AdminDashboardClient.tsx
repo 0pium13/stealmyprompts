@@ -204,32 +204,16 @@ export default function AdminDashboardClient({ stats, storyboards }: { stats: Ad
                         <CardContent>
                             <form id="storyboard-form" action={handleAddStoryboard} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium mb-1">Title</label>
+                                    <label className="block text-sm font-medium mb-1">Title *</label>
                                     <input name="title" required placeholder="e.g. Cinematic Car Chase" className="w-full p-2 rounded-lg border border-border bg-surface focus:ring-2 focus:ring-primary outline-none" />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-1">YouTube URL</label>
+                                    <label className="block text-sm font-medium mb-1">YouTube URL *</label>
                                     <input name="videoUrl" required placeholder="https://www.youtube.com/watch?v=..." className="w-full p-2 rounded-lg border border-border bg-surface focus:ring-2 focus:ring-primary outline-none" />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-1">PDF/Flipbook URL</label>
-                                    <input name="pdfUrl" placeholder="https://..." className="w-full p-2 rounded-lg border border-border bg-surface focus:ring-2 focus:ring-primary outline-none" />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">Description</label>
-                                    <textarea name="description" rows={2} className="w-full p-2 rounded-lg border border-border bg-surface focus:ring-2 focus:ring-primary outline-none" />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">Script</label>
-                                    <textarea name="script" rows={3} placeholder="Scene 1: INT. NIGHT..." className="w-full p-2 rounded-lg border border-border bg-surface focus:ring-2 focus:ring-primary outline-none" />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">Workflow Notes</label>
-                                    <textarea name="workflowNotes" rows={3} placeholder="Used Midjourney v6 with..." className="w-full p-2 rounded-lg border border-border bg-surface focus:ring-2 focus:ring-primary outline-none" />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">Prompts (JSON Array)</label>
-                                    <textarea name="promptsUsed" rows={3} placeholder='["/imagine prompt: ...", ...]' className="w-full p-2 rounded-lg border border-border bg-surface focus:ring-2 focus:ring-primary outline-none font-mono text-xs" />
+                                    <label className="block text-sm font-medium mb-1">Description (Optional)</label>
+                                    <textarea name="description" rows={3} placeholder="Brief description of the video..." className="w-full p-2 rounded-lg border border-border bg-surface focus:ring-2 focus:ring-primary outline-none" />
                                 </div>
                                 <button type="submit" disabled={isSubmitting} className="w-full bg-primary hover:bg-primary/90 text-white py-2 rounded-lg font-medium transition-colors disabled:opacity-50">
                                     {isSubmitting ? "Creating..." : "Create Storyboard"}

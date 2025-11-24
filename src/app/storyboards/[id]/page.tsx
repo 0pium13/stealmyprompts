@@ -23,6 +23,22 @@ export default async function StoryboardDetailPage({ params }: { params: Promise
 
     const videoId = storyboard.videoUrl ? getYoutubeId(storyboard.videoUrl) : null;
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "VideoObject",
+        "name": storyboard.title,
+        "description": storyboard.description || `Storyboard for ${storyboard.title}`,
+        "thumbnailUrl": videoId ? [`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`] : [],
+        "uploadDate": storyboard.createdAt.toISOString(),
+        "contentUrl": storyboard.videoUrl,
+        "embedUrl": videoId ? `https://www.youtube.com/embed/${videoId}` : "",
+        "author": {
+            "@type": "Person",
+            "name": storyboard.creator?.username || storyboard.creator?.name || "Unknown",
+            "url": `https://stealmyprompts.ai/profile/${storyboard.creator?.username || ''}`
+        }
+    };
+
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
             <Link
@@ -137,6 +153,10 @@ export default async function StoryboardDetailPage({ params }: { params: Promise
                     </div>
                 </div>
             </div>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
         </div>
     );
 }

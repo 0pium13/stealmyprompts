@@ -1,0 +1,55 @@
+# Steal My Prompts
+
+> AI prompt library and filmmaking hub
+
+## Description
+
+Steal My Prompts is a comprehensive platform for discovering, browsing, and copying AI prompts for image and video generation. We provide a curated library of prompts for Midjourney, Sora, Runway, Kling, and other AI platforms, along with detailed storyboards and behind-the-scenes filmmaking workflows.
+
+## Key Features
+
+- **AI Prompt Library**: Browse 1000+ prompts for Midjourney, Sora, Runway, and Kling
+- **Storyboards**: Detailed BTS workflows and filmmaking techniques
+- **Search & Filter**: Find prompts by style, camera settings, and platform
+- **Community**: Join 2,000+ creators sharing and discovering AI prompts
+
+## Main Pages
+
+- Homepage: https://stealmyprompts.ai
+- Prompts Library: https://stealmyprompts.ai/prompts
+- Storyboards: https://stealmyprompts.ai/storyboards
+- Submit Prompt: https://stealmyprompts.ai/submit
+
+## Content Types
+
+### Prompts
+Each prompt includes:
+- Full prompt text
+- Negative prompts
+- Camera settings (lens, angle, movement)
+- Style tags
+- Platform compatibility
+- Creator attribution
+
+### Storyboards
+Storyboards feature:
+- Video tutorials
+- BTS workflows
+- Production techniques
+- Shot breakdowns
+- Filmmaking tips
+
+## Target Audience
+
+- AI artists and creators
+- Filmmakers exploring AI tools
+- Content creators using Midjourney, Sora, Runway
+- Digital artists seeking inspiration
+- Prompt engineers
+
+## Technologies
+
+- Next.js 16
+- Prisma ORM
+- Cloudflare R2 for media storage
+- Clerk for authentication

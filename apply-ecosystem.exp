@@ -1,0 +1,31 @@
+#!/usr/bin/expect
+
+set timeout -1
+set password "fh7A&2wKnjMW@+t91Yj+"
+
+puts "📤 Uploading ecosystem.config.js..."
+
+spawn scp /Users/opium/vvvv/ecosystem.config.js root@88.222.215.156:/var/www/stealmyprompts/
+
+expect {
+    "password:" { send "$password\r"; exp_continue }
+    eof
+}
+
+puts "🔄 Restarting PM2 with ecosystem config..."
+
+spawn ssh root@88.222.215.156
+
+expect "password:"
+send "$password\r"
+
+expect "#"
+send "cd /var/www/stealmyprompts && pm2 delete all && pm2 start ecosystem.config.js && pm2 save\r"
+
+expect "#"
+send "sleep 3 && curl -I http://localhost:3000\r"
+
+expect "#"
+send "exit\r"
+
+expect eof

@@ -23,6 +23,32 @@ export default async function PromptDetailPage({
 
     const creatorName = prompt.creator?.username || prompt.creator?.name || prompt.creatorName || 'Anonymous';
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": prompt.title,
+        "image": prompt.mediaUrl ? [prompt.mediaUrl] : [],
+        "datePublished": prompt.createdAt.toISOString(),
+        "author": {
+            "@type": "Person",
+            "name": creatorName,
+            "url": `https://stealmyprompts.ai/profile/${prompt.creator?.username || ''}`
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Steal My Prompts",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://stealmyprompts.ai/logo.png"
+            }
+        },
+        "articleBody": prompt.promptText,
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": `https://stealmyprompts.ai/prompts/${prompt.id}`
+        }
+    };
+
     return (
         <main className="min-h-screen bg-background">
             <Header />
@@ -69,6 +95,10 @@ export default async function PromptDetailPage({
                     </div>
                 </div>
             </div>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
         </main>
     );
 }

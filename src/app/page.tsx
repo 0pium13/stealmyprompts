@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300; // Revalidate every 5 minutes
 
 export default async function Home() {
     // Redirect admins to admin dashboard
@@ -21,8 +21,21 @@ export default async function Home() {
             featured: true
         },
         orderBy: { featuredOrder: 'asc' },
-        include: { creator: true },
-        take: 12,
+        select: {
+            id: true,
+            title: true,
+            promptText: true,
+            mediaUrl: true,
+            tags: true,
+            creatorName: true,
+            creator: {
+                select: {
+                    username: true,
+                    name: true,
+                }
+            }
+        },
+        take: 8,
     });
 
     return (

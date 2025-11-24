@@ -1,0 +1,32 @@
+#!/usr/bin/expect
+
+set timeout -1
+set password "fh7A&2wKnjMW@+t91Yj+"
+
+spawn ssh root@88.222.215.156
+
+expect "password:"
+send "$password\r"
+
+expect "#"
+send "cd /var/www/stealmyprompts && cat .env | head -20\r"
+
+expect "#"
+send "npm run build\r"
+
+expect {
+    "Build completed" { }
+    "Failed to compile" { }
+    timeout { }
+}
+
+expect "#"
+send "pm2 start stealmyprompts\r"
+
+expect "#"
+send "curl http://localhost:3000\r"
+
+expect "#"
+send "exit\r"
+
+expect eof

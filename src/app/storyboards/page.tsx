@@ -3,6 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { Storyboard } from "@prisma/client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "AI Filmmaking Tutorials & BTS Workflows | Steal My Prompts",
+    description: "Learn AI filmmaking with detailed BTS workflows. Watch tutorials, download storyboards, steal production techniques for Sora, Runway, and Kling.",
+    keywords: ['AI filmmaking', 'storyboards', 'BTS workflows', 'Sora tutorials', 'Runway tutorials', 'video production', 'AI video'],
+};
 
 const getYoutubeThumbnail = (url: string | null) => {
     if (!url) return "/placeholder.jpg";

@@ -3,8 +3,16 @@ import FilterBar from "@/components/prompts/FilterBar";
 import PromptCard from "@/components/prompts/PromptCard";
 import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "1000+ AI Prompts for Midjourney, Sora, Runway | Browse & Copy",
+    description: "Browse 1000+ AI prompts for image and video generation. Copy prompts for Midjourney, Sora, Runway, Kling. Filter by style, camera, platform.",
+    keywords: ['AI prompts', 'Midjourney prompts', 'Sora prompts', 'Runway prompts', 'Kling prompts', 'prompt library', 'AI art'],
+};
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 60; // Revalidate every minute for search/filter changes
 
 export default async function PromptsPage({
     searchParams,

@@ -70,13 +70,16 @@ model Prompt {
   // Stats
   views       Int @default(0)
 
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   creator      User?        @relation(fields: [creatorId], references: [id])
   likes        Like[]
 
+  @@index([status, featured, featuredOrder])
+  @@index([status, createdAt])
+  @@index([creatorId])
 
   @@index([createdAt])
   @@index([status])

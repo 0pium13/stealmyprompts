@@ -12,28 +12,13 @@ export async function createStoryboard(formData: FormData) {
             return { error: "Unauthorized" };
         }
 
-        // 2. Get Data
+        // 2. Get Data (only title, videoUrl, description)
         const title = formData.get("title") as string;
         const videoUrl = formData.get("videoUrl") as string;
         const description = formData.get("description") as string;
-        const script = formData.get("script") as string;
-        const workflowNotes = formData.get("workflowNotes") as string;
-        const pdfUrl = formData.get("pdfUrl") as string;
-        const promptsUsedRaw = formData.get("promptsUsed") as string;
 
         if (!title || !videoUrl) {
             return { error: "Title and Video URL are required" };
-        }
-
-        let promptsUsed = undefined;
-        if (promptsUsedRaw) {
-            try {
-                promptsUsed = JSON.parse(promptsUsedRaw);
-            } catch (e) {
-                // If not valid JSON, store as string array with one item or just ignore
-                // For now, let's assume valid JSON or empty
-                console.error("Invalid JSON for promptsUsed");
-            }
         }
 
         // 3. Create Storyboard
@@ -47,11 +32,10 @@ export async function createStoryboard(formData: FormData) {
             data: {
                 title,
                 videoUrl,
-                description,
-                script,
-                workflowNotes,
-                pdfUrl,
-                promptsUsed: promptsUsed || undefined,
+                description: description || null,
+                script: null,
+                workflowNotes: null,
+                pdfUrl: null,
                 creatorId: user.id,
                 order,
             },
@@ -67,6 +51,9 @@ export async function createStoryboard(formData: FormData) {
         return { error: "Failed to create storyboard" };
     }
 }
+
+
+
 
 export async function updateStoryboard(id: string, formData: FormData) {
     try {

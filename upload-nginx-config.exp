@@ -1,0 +1,8 @@
+#!/usr/bin/expect
+set timeout -1
+set password "fh7A&2wKnjMW@+t91Yj+"
+spawn scp /Users/opium/vvvv/nginx/stealmyprompts.conf root@88.222.215.156:/etc/nginx/sites-available/stealmyprompts
+expect {
+    "password:" { send "$password\r"; exp_continue }
+    eof
+}

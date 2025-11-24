@@ -1,0 +1,33 @@
+#!/usr/bin/expect
+
+set timeout -1
+set password "fh7A&2wKnjMW@+t91Yj+"
+
+spawn ssh root@88.222.215.156
+
+expect "password:"
+send "$password\r"
+
+expect "#"
+send "cd /var/www/stealmyprompts\r"
+
+expect "#"
+send "pm2 delete stealmyprompts\r"
+
+expect "#"
+send "pm2 start npm --name stealmyprompts -- start --update-env\r"
+
+expect "#"
+send "pm2 save\r"
+
+expect "#"
+send "pm2 logs --lines 20\r"
+
+sleep 3
+
+send "\003"
+
+expect "#"
+send "exit\r"
+
+expect eof

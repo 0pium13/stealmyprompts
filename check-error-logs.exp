@@ -1,0 +1,11 @@
+#!/usr/bin/expect
+
+set timeout -1
+set password "fh7A&2wKnjMW@+t91Yj+"
+
+spawn ssh root@88.222.215.156 "pm2 logs stealmyprompts --lines 100 --nostream"
+
+expect {
+    "password:" { send "$password\r"; exp_continue }
+    eof
+}

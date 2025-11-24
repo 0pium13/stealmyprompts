@@ -17,13 +17,27 @@ export async function isAdmin(): Promise<boolean> {
  * Use this in server components/actions that need admin access
  */
 export async function requireAdmin() {
-    const user = await currentUser();
+    // Use Clerk auth to get userId from cookies (works in server components)
+    const { userId } = await auth();
 
-    if (!user || user.publicMetadata?.role !== "admin") {
+    if (!userId) {
         redirect("/");
+        return; // unreachable but satisfies TypeScript
     }
 
-    return user;
+    // Fetch user from DB to verify role
+    const prisma = (await import("@/lib/prisma")).default;
+    const dbUser = await prisma.user.findUnique({
+        where: { clerkId: userId },
+        select: { id: true, role: true, username: true }
+    });
+
+    if (!dbUser || dbUser.role !== "ADMIN") {
+        redirect("/");
+        return;
+    }
+
+    return dbUser;
 }
 
 /**
