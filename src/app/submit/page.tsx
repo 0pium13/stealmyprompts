@@ -74,8 +74,16 @@ export default function SubmitPage() {
                 })
             });
 
-            if (!presignRes.ok) throw new Error('Failed to get upload URL');
+            console.log('[Submit] Presign response status:', presignRes.status);
+
+            if (!presignRes.ok) {
+                const errorData = await presignRes.json().catch(() => ({}));
+                console.error('[Submit] Presign error:', errorData);
+                throw new Error(errorData.details || errorData.error || 'Failed to get upload URL');
+            }
+
             const { url, publicUrl } = await presignRes.json();
+            console.log('[Submit] Got presigned URL successfully');
 
             // 2. Upload to R2
             const uploadRes = await fetch(url, {
