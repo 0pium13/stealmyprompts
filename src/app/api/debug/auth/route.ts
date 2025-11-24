@@ -1,33 +1,43 @@
-import { auth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { getAuth } from "@clerk/nextjs/server";
+import { NextResponse, NextRequest } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
     console.log('[Auth Debug] === DIAGNOSTIC REQUEST ===');
 
     // 1. Check Env Vars
     const pubKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
     const secretKey = process.env.CLERK_SECRET_KEY;
 
-    console.log('[Auth Debug] Env Vars:');
-    console.log(`- NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${pubKey ? pubKey.substring(0, 10) + '...' : 'MISSING'}`);
-    console.log(`- CLERK_SECRET_KEY: ${secretKey ? secretKey.substring(0, 10) + '...' : 'MISSING'}`);
-
     // 2. Check Request Headers
     const headers = Object.fromEntries(request.headers);
-    console.log('[Auth Debug] Request Headers (Cookies):', headers.cookie ? 'Present' : 'Missing');
-    if (headers.cookie) {
-        console.log('[Auth Debug] Cookie names:', headers.cookie.split(';').map(c => c.trim().split('=')[0]).join(', '));
-    }
 
-    // 3. Check Auth Status
+    // 3. Check Auth Status via multiple methods
+    let authResult = null;
+    let getAuthResult = null;
+    let userResult = null;
+
     try {
-        const { userId, sessionId, getToken } = await auth();
-        console.log('[Auth Debug] Auth Result:');
-        console.log(`- userId: ${userId}`);
-        console.log(`- sessionId: ${sessionId}`);
+        // Method A: auth()
+        const authObj = await auth();
+        authResult = {
+            userId: authObj.userId,
+            sessionId: authObj.sessionId,
+        };
 
-        const token = await getToken();
-        console.log(`- token: ${token ? 'Present' : 'Missing'}`);
+        // Method B: getAuth(req)
+        const getAuthObj = getAuth(request);
+        getAuthResult = {
+            userId: getAuthObj.userId,
+            sessionId: getAuthObj.sessionId,
+        };
+
+        // Method C: currentUser()
+        const user = await currentUser();
+        userResult = {
+            id: user?.id,
+            email: user?.emailAddresses[0]?.emailAddress
+        };
 
         return NextResponse.json({
             status: 'ok',
@@ -35,15 +45,13 @@ export async function GET(request: Request) {
                 pubKeyPrefix: pubKey ? pubKey.substring(0, 10) : null,
                 secretKeyPrefix: secretKey ? secretKey.substring(0, 10) : null,
             },
-            auth: {
-                userId,
-                sessionId,
-                hasToken: !!token
-            },
+            auth: authResult,
+            getAuth: getAuthResult,
+            currentUser: userResult,
             cookies: headers.cookie ? headers.cookie.split(';').map(c => c.trim().split('=')[0]) : []
         });
     } catch (e) {
         console.error('[Auth Debug] Auth Error:', e);
-        return NextResponse.json({ error: (e as Error).message }, { status: 500 });
+        return NextResponse.json({ error: (e as Error).message, stack: (e as Error).stack }, { status: 500 });
     }
 }
