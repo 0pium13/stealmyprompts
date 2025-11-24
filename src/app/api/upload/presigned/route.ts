@@ -2,6 +2,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
+import { auth } from "@clerk/nextjs/server";
 import { requireAuth } from "@/lib/auth";
 
 const R2 = new S3Client({
@@ -15,7 +16,12 @@ const R2 = new S3Client({
 
 export async function POST(request: Request) {
     try {
-        await requireAuth();
+        // Use auth() instead of requireAuth() for API routes
+        const { userId } = await auth();
+
+        if (!userId) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
 
         const { filename, contentType } = await request.json();
         const uniqueFilename = `${randomUUID()}-${filename}`;
