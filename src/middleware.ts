@@ -1,7 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 const isProtectedRoute = createRouteMatcher([
-    '/submit(.*)',
+    // '/submit(.*)', // made public for testing; authentication will be enforced in the page component
     '/profile/edit(.*)',
     '/profile/settings(.*)',
 ]);

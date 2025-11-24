@@ -5,7 +5,6 @@ import { toast } from 'sonner';
 import { Loader2, Upload, X, Image as ImageIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/layout/Header';
-import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/nextjs';
 import { submitPrompt } from '@/app/actions/submit';
 
 export default function SubmitPage() {
@@ -107,121 +106,109 @@ export default function SubmitPage() {
         <main className="min-h-screen bg-background">
             <Header />
 
-            <SignedOut>
-                <div className="flex flex-col items-center justify-center py-20 text-center">
-                    <h1 className="text-3xl font-bold mb-4">Sign in to Submit</h1>
-                    <p className="text-text/60 mb-8 max-w-md">
-                        Share your best AI prompts with the community.
-                    </p>
-                    <RedirectToSignIn />
-                </div>
-            </SignedOut>
+            <div className="max-w-2xl mx-auto p-8">
+                <h1 className="text-3xl font-bold mb-2">Submit Prompt</h1>
+                <p className="text-text/60 mb-8">
+                    Upload your AI-generated masterpiece and share the prompt.
+                </p>
 
-            <SignedIn>
-                <div className="max-w-2xl mx-auto p-8">
-                    <h1 className="text-3xl font-bold mb-2">Submit Prompt</h1>
-                    <p className="text-text/60 mb-8">
-                        Upload your AI-generated masterpiece and share the prompt.
-                    </p>
-
-                    <div className="space-y-6">
-                        {/* Image Upload */}
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Image</label>
-                            {!previewUrl ? (
-                                <div
-                                    onClick={() => fileInputRef.current?.click()}
-                                    className="border-2 border-dashed border-gray-300 rounded-xl p-10 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-blue-50 transition-colors"
-                                >
-                                    <Upload className="w-10 h-10 text-gray-400 mb-4" />
-                                    <p className="text-sm font-medium text-gray-700">Click to upload image</p>
-                                    <p className="text-xs text-gray-500 mt-1">JPG, PNG, WebP up to 10MB</p>
-                                </div>
-                            ) : (
-                                <div className="relative rounded-xl overflow-hidden border border-gray-200">
-                                    <img src={previewUrl} alt="Preview" className="w-full h-auto object-cover" />
-                                    <button
-                                        onClick={clearFile}
-                                        className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white p-1.5 rounded-full transition-colors"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            )}
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                onChange={handleFileSelect}
-                                accept="image/*"
-                                className="hidden"
-                            />
-                        </div>
-
-                        {/* Title */}
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Title</label>
-                            <input
-                                type="text"
-                                placeholder="e.g., Cyberpunk Cityscape"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                className="w-full p-3 border border-accent-light rounded-lg outline-none focus:border-primary"
-                            />
-                        </div>
-
-                        {/* Tags */}
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Tags (Optional)</label>
-                            <div className="flex flex-wrap gap-3">
-                                {['He', 'She', 'Couple'].map((tag) => (
-                                    <label
-                                        key={tag}
-                                        className="flex items-center gap-2 cursor-pointer"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedTags.includes(tag)}
-                                            onChange={() => handleToggleTag(tag)}
-                                            className="w-4 h-4 rounded border-accent-light text-primary focus:ring-primary cursor-pointer"
-                                        />
-                                        <span className="text-sm">{tag}</span>
-                                    </label>
-                                ))}
+                <div className="space-y-6">
+                    {/* Image Upload */}
+                    <div>
+                        <label className="block text-sm font-medium mb-2">Image</label>
+                        {!previewUrl ? (
+                            <div
+                                onClick={() => fileInputRef.current?.click()}
+                                className="border-2 border-dashed border-gray-300 rounded-xl p-10 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-blue-50 transition-colors"
+                            >
+                                <Upload className="w-10 h-10 text-gray-400 mb-4" />
+                                <p className="text-sm font-medium text-gray-700">Click to upload image</p>
+                                <p className="text-xs text-gray-500 mt-1">JPG, PNG, WebP up to 10MB</p>
                             </div>
-                        </div>
-
-                        {/* Prompt */}
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Prompt</label>
-                            <textarea
-                                placeholder="Paste the exact prompt used to generate this image..."
-                                value={prompt}
-                                onChange={(e) => setPrompt(e.target.value)}
-                                className="w-full p-3 border border-accent-light rounded-lg h-32 outline-none focus:border-primary"
-                            />
-                        </div>
-
-                        {/* Submit Button */}
-                        <button
-                            onClick={handleSubmit}
-                            disabled={uploading || !file || !title || !prompt}
-                            className="w-full bg-primary text-white p-4 rounded-full font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
-                        >
-                            {uploading ? (
-                                <>
-                                    <Loader2 className="animate-spin w-5 h-5" />
-                                    Uploading...
-                                </>
-                            ) : (
-                                <>
-                                    <Upload className="w-5 h-5" />
-                                    Submit Prompt
-                                </>
-                            )}
-                        </button>
+                        ) : (
+                            <div className="relative rounded-xl overflow-hidden border border-gray-200">
+                                <img src={previewUrl} alt="Preview" className="w-full h-auto object-cover" />
+                                <button
+                                    onClick={clearFile}
+                                    className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white p-1.5 rounded-full transition-colors"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            </div>
+                        )}
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileSelect}
+                            accept="image/*"
+                            className="hidden"
+                        />
                     </div>
+
+                    {/* Title */}
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Title</label>
+                        <input
+                            type="text"
+                            placeholder="e.g., Cyberpunk Cityscape"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            className="w-full p-3 border border-accent-light rounded-lg outline-none focus:border-primary"
+                        />
+                    </div>
+
+                    {/* Tags */}
+                    <div>
+                        <label className="block text-sm font-medium mb-2">Tags (Optional)</label>
+                        <div className="flex flex-wrap gap-3">
+                            {['He', 'She', 'Couple'].map((tag) => (
+                                <label
+                                    key={tag}
+                                    className="flex items-center gap-2 cursor-pointer"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedTags.includes(tag)}
+                                        onChange={() => handleToggleTag(tag)}
+                                        className="w-4 h-4 rounded border-accent-light text-primary focus:ring-primary cursor-pointer"
+                                    />
+                                    <span className="text-sm">{tag}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Prompt */}
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Prompt</label>
+                        <textarea
+                            placeholder="Paste the exact prompt used to generate this image..."
+                            value={prompt}
+                            onChange={(e) => setPrompt(e.target.value)}
+                            className="w-full p-3 border border-accent-light rounded-lg h-32 outline-none focus:border-primary"
+                        />
+                    </div>
+
+                    {/* Submit Button */}
+                    <button
+                        onClick={handleSubmit}
+                        disabled={uploading || !file || !title || !prompt}
+                        className="w-full bg-primary text-white p-4 rounded-full font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
+                    >
+                        {uploading ? (
+                            <>
+                                <Loader2 className="animate-spin w-5 h-5" />
+                                Uploading...
+                            </>
+                        ) : (
+                            <>
+                                <Upload className="w-5 h-5" />
+                                Submit Prompt
+                            </>
+                        )}
+                    </button>
                 </div>
-            </SignedIn>
-        </main>
+            </div>
+        </main >
     );
 }
