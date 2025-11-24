@@ -6,9 +6,13 @@ import { Loader2, Upload, X, Image as ImageIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import { submitPrompt } from '@/app/actions/submit';
+import { useAuth, useUser } from '@clerk/nextjs';
+import Link from 'next/link';
 
 export default function SubmitPage() {
     const router = useRouter();
+    const { isSignedIn } = useAuth();
+    const { user } = useUser();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [file, setFile] = useState<File | null>(null);
@@ -48,6 +52,11 @@ export default function SubmitPage() {
     };
 
     const handleSubmit = async () => {
+        if (!isSignedIn) {
+            toast.error('Please sign in to submit prompts');
+            return;
+        }
+
         if (!file || !title || !prompt) {
             toast.error('Please fill in all fields and upload an image');
             return;
@@ -111,6 +120,17 @@ export default function SubmitPage() {
                 <p className="text-text/60 mb-8">
                     Upload your AI-generated masterpiece and share the prompt.
                 </p>
+
+                {!isSignedIn && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                        <p className="text-yellow-800 text-sm">
+                            <strong>Sign in required:</strong> You need to be signed in to submit prompts.{' '}
+                            <Link href="/sign-in" className="underline font-medium hover:text-yellow-900">
+                                Sign in here
+                            </Link>
+                        </p>
+                    </div>
+                )}
 
                 <div className="space-y-6">
                     {/* Image Upload */}
